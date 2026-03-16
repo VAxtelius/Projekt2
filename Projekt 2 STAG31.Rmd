@@ -2,9 +2,10 @@
 title: 'STAG31: Projekt 2'
 author: "Josefine Sandell"
 date: "`r Sys.Date()`"
-output: word_document
+output:
+  html_document:
+    df_print: paged
 toc: true
-
 ---
 
 ```{r setup, include=FALSE}
@@ -37,7 +38,7 @@ Punktskattningen av theta visas stå ungefär vid 3.75 i figur 1. Vi visar detta
 
 ```{r q1.1.2, fig.cap= "Första Derivatan"}
 
-X <- c(3.2, 4.2, 2.8, 11.6)
+X <- c(3.2, 4.2, 2.8, 11.6) 
 
 första_der <- -2*X[1] - 2*X[2] - 2*X[3] - 6*X[4] + 24*theta
 
@@ -48,7 +49,7 @@ abline(v = theta_skattad, lty = "dashed", col = "red")
 ```
 När första derivatan är 0 (visas med svarta linjen) så är thetaskattningen ungefär 3.75. Detta stämmer överrens med analytiska lösningen som vi gjorde för hand samt figur 1.
 
-```{r q1.1.3, fig.cap="MK-skattad theta med nya Y-observationer}
+```{r q1.1.3, fig.cap="MK-skattad theta med nya Y-observationer"}
 
 Y <- c(3.05, 2.9, 2.95, 3.2, 2.8, 4.2, 9.05, 11.6)
 
@@ -63,10 +64,6 @@ QMK2 <-
   (Y[7] -3*theta)^2 + 
   (Y[8] -3*theta)^2
 
-mean(X)
-mean(Y)
-var(X)
-var(Y)
 var(QMK)
 var(QMK2)
 
@@ -78,14 +75,16 @@ abline(v = theta_2_skattad, lty = "dashed", col = "red")
 
 ```
 
-Punktskattningen för theta är lägre för de nya observationerna. Här visas skattningen vara lika med ungefär 3.375.
+Vi har valt att beteckna de första observationsmängden som X-värden, och de nya mängden som Y-vären.
 
-Väntevärdet för de första X-observationerna är ungefär 3.517, medan väntevärdet för de nya observationerna (som jag betecknade som Y-observationer) är 3.2479. 
-Variansen för X-observationerna är 0.298, medan variansen för Y-observationerna 0.22437.
+Punktskattningen för theta är lägre för de Y-observationerna. Här visas skattningen vara lika med ungefär 3.375.
 
-Både väntevärdet och variansen är lägre för observationerna av Y än de av X. Detta kan förklara varför thetas skattning är lägre. 
+Väntevärdet har samma struktur för båda mängderna (theta respektiva 3*theta). Men eftersom vi har fått nya observationer så har väntevärdet förändrats. För hand räknade vi ut att väntevärdet för de första X-observationerna är ungefär 3.517, medan väntevärdet för Y-värdena är 3.2479. 
 
-Skillnaden beror inte på variansen för thetaskattningen, då den är likadan för båda observationsmängderna på ungefär 18.54.
+Detta kan förklara varför thetas skattning är lägre, eftersom theta respektive 3*theta motsvarar väntevärdet. 
+
+Variansen på skattningen blir mindre då vi har fått fler observationer. Detta påverkar också formen på QMK-funktionen. Parabeln blir brantare och smalare; den avtar och växer snabbare. 
+
 
 ```{r, fig.cap = "Första Derivatan med de nya observationerna"}
 
@@ -97,7 +96,9 @@ abline(0, 0, lty = "dashed")
 abline(v = theta_2_skattad, lty = "dashed", col = "red")
 
 ```
-Funktionen för första derivatan visar att punktskattningen av theta är mellan 3.2 och 3.4 eftersom det är där första derivatan blir 0. Detta stöds av den analytiska lösningen som jag räknade ut för hand; punktskattningen för theta med dessa nya observationer blev 3.377.
+Funktionen för första derivatan visar att punktskattningen av theta är mellan 3.2 och 3.4 eftersom det är där första derivatan blir 0. Detta stöds av den analytiska lösningen som vi räknade ut för hand där skattningen var lika med 3.377.
+
+Här ser vi även att lutningen på derivatan har blivit mycket brantare med de nya observationerna. Skillnaden är tydligare när man tittar på y-axeln. Detta kan tyda på att minimat är mer väldefinierat och skattningen mer stabil.
 
 
 ## 1.2. Maximum likelihood-metoden
