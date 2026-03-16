@@ -1,0 +1,137 @@
+---
+title: 'STAG31: Projekt 2'
+author: "Josefine Sandell"
+date: "`r Sys.Date()`"
+output: word_document
+toc: true
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Parameterskattning -- Illustration av MK- och ML-metoden
+
+# 1.1. MK-metoden, minsta-kvadrat-metoden
+
+
+```{r q1.1.1, fig.cap="MK-skattning av theta"}
+
+theta <- seq(2.8, 4.2, 0.01)
+
+QMK <- (3.2-theta)^2 + (4.2-theta)^2 + (2.8-theta)^2 + (11.6-3*theta)^2
+
+theta_skattad <- 3.75 # analytiska lösningen
+
+plot(theta, QMK, type = "l", col = "blue", 
+     xlab = expression(theta), ylab = expression(Q(theta)))
+abline(v = theta_skattad, lty = "dashed", col = "darkred")
+
+
+```
+Jag räknade ut MK-skattningen 3.75 för hand, vilket stämmer överrens med skattningen som visas i figuren. 
+
+Punktskattningen av theta visas stå ungefär vid 3.75 i figur 1. Vi visar detta med den röda streckade linjen som representerar den analytiska lösningen.
+
+
+```{r q1.1.2, fig.cap= "Första Derivatan"}
+
+X <- c(3.2, 4.2, 2.8, 11.6)
+
+första_der <- -2*X[1] - 2*X[2] - 2*X[3] - 6*X[4] + 24*theta
+
+plot(theta, första_der, type = "l", col = "blue", xlab = expression(theta), ylab = "Första Derivatan")
+abline(a = 0, b = 0, lty = "dashed", lwd = 0.5)
+abline(v = theta_skattad, lty = "dashed", col = "red")
+
+```
+När första derivatan är 0 (visas med svarta linjen) så är thetaskattningen ungefär 3.75. Detta stämmer överrens med analytiska lösningen som vi gjorde för hand samt figur 1.
+
+```{r q1.1.3, fig.cap="MK-skattad theta med nya Y-observationer}
+
+Y <- c(3.05, 2.9, 2.95, 3.2, 2.8, 4.2, 9.05, 11.6)
+
+
+QMK2 <- 
+  (Y[1]-theta)^2 + 
+  (Y[2]-theta)^2 + 
+  (Y[3]-theta)^2 + 
+  (Y[4]-theta)^2 + 
+  (Y[5]-theta)^2 + 
+  (Y[6] -theta)^2 + 
+  (Y[7] -3*theta)^2 + 
+  (Y[8] -3*theta)^2
+
+mean(X)
+mean(Y)
+var(X)
+var(Y)
+var(QMK)
+var(QMK2)
+
+theta_2_skattad <- theta[which.min(QMK2)]
+
+plot(theta, QMK2, type = "l", col = "navy")
+abline(v = theta_2_skattad, lty = "dashed", col = "red")
+
+
+```
+
+Punktskattningen för theta är lägre för de nya observationerna. Här visas skattningen vara lika med ungefär 3.375.
+
+Väntevärdet för de första X-observationerna är ungefär 3.517, medan väntevärdet för de nya observationerna (som jag betecknade som Y-observationer) är 3.2479. 
+Variansen för X-observationerna är 0.298, medan variansen för Y-observationerna 0.22437.
+
+Både väntevärdet och variansen är lägre för observationerna av Y än de av X. Detta kan förklara varför thetas skattning är lägre. 
+
+Skillnaden beror inte på variansen för thetaskattningen, då den är likadan för båda observationsmängderna på ungefär 18.54.
+
+```{r, fig.cap = "Första Derivatan med de nya observationerna"}
+
+
+första_der2 <- -2*Y[1] - 2*Y[2] - 2*Y[3] - 2*Y[4] - 2*Y[5] - 2*Y[6] - 6*Y[7] - 6*Y[8] + 48*theta
+
+plot(theta, första_der2, type = "l", col = "darkblue")
+abline(0, 0, lty = "dashed")
+abline(v = theta_2_skattad, lty = "dashed", col = "red")
+
+```
+Funktionen för första derivatan visar att punktskattningen av theta är mellan 3.2 och 3.4 eftersom det är där första derivatan blir 0. Detta stöds av den analytiska lösningen som jag räknade ut för hand; punktskattningen för theta med dessa nya observationer blev 3.377.
+
+
+## 1.2. Maximum likelihood-metoden
+
+```{r 1.2}
+
+theta <- seq(1, 9, 0.01)
+
+X <- c(3, 5, 6)
+
+
+likelihood <- (1/(sqrt(theta*pi)))^3 * exp(-((X[1]-5)^2 + (X[2]-5)^2 + (X[3]-5)^2) / theta)
+
+
+log_likelihood <- (-3/2)*log(theta) - (3/2)*log(pi) - ((X[1]-5)^2 + (X[2]-5)^2 + (X[3]-5)^2) / theta
+
+theta_hat <- 10/3 # analytiska lösningen
+
+plot(theta, likelihood, type = "l", col = "darkblue")
+abline(v = theta_hat, lty = "dashed", lwd = 1, col = "red") 
+
+plot(theta, log_likelihood, type = "l", col = "steelblue")
+abline(v = theta_hat, lty = "dashed", lwd = 1, col = "red")
+
+
+första_der <- (-3*theta)/2 + (X[1] - 5)^2 + (X[2] - 5)^2 + (X[3] - 5)^2 
+
+plot(theta, första_der, col = "orange")
+abline(a = 0, b= 0, lty = "dashed")
+abline(v = theta_hat, lty = "dashed", lwd = 1, col = "red")
+
+
+```
+
+Värdet vi avläser i figurerna stämmer överrens med den analytiska lösningen vi hittade, theta_hat = 10/3. 
+
+Både likelihood- och loglikelihoodfunktionerna visar att max-värdet är nära 3.33, och figuren med första derivatan visar att när derivatan är nollställd så är theta nära 3.33.
